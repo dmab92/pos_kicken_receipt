@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<templates id="pos_kot_print_template" inherit_id="point_of_sale.template" xml:space="preserve">
+			<!-- PrintKotButtonWidget -->
+	<t t-name="PrintKotButtonWidget" name="kot print Button Widget">
+		<t t-if="widget.pos.config.kot_print">
+			<div class="control-button">
+				<i class="fa fa-print"></i>Print Kitchen Receipt 
+			</div>
+		</t>
+	</t>
+
+	<t t-name="PrintDrinksButtonWidget" name="Drinks print Button Widget">
+		<t t-if="widget.pos.config.drinks_print">
+			<div class="control-button">
+				<i class="fa fa-print"></i>Print Drinks Receipt 
+			</div>
+		</t>
+	</t>
+
+	<t t-name="PrintChichaButtonWidget" name="chicha print Button Widget">
+		<t t-if="widget.pos.config.chicha_print">
+			<div class="control-button">
+				<i class="fa fa-print"></i>Print Chicha Receipt 
+			</div>
+		</t>
+	</t>
+
+	<t t-name="PrintChawarmaButtonWidget" name="Chawarma print Button Widget">
+		<t t-if="widget.pos.config.chawarma_print">
+			<div class="control-button">
+				<i class="fa fa-print"></i>Print Natural Juice Receipt 
+			</div>
+		</t>
+	</t>
+
+	<t t-name="PrintPizzaButtonWidget" name="pizza print Button Widget">
+		<t t-if="widget.pos.config.pizza_print">
+			<div class="control-button">
+				<i class="fa fa-print"></i>Print Pizza Receipt 
+			</div>
+		</t>
+	</t>
+
+
+		<!-- After Created orderlines Print Buttton -->
+	<t t-name="PrintKotButtonScreen">
+		<div class='receipt-screen screen'>
+			<div class='screen-content'>
+				<div class='top-content'>
+					<span class='button back' style="background-color:#6EC89B; color:white">
+						<i class='fa fa-angle-double-left' style="margin-left:5px;"></i>
+						Back
+					</span>
+					<span class='button next' style="background-color:#6EC89B; color:white">
+						Ok
+						<i class='fa fa-angle-double-right' style="margin-left:5px;"></i>
+					</span>
+				</div>
+				<div class="centered-content touch-scrollable">
+					<div class="button print-coupon">
+						  <i class='fa fa-print'></i> Print Coupon
+					</div>
+					<div class="pos-payment-receipt-container" style="text-align: center;">
+					  </div>
+				</div>
+			</div>
+	  </div>
+	</t>
+
+
+	<t t-name="KotTicket">
+		<t t-jquery=".cashier" t-operation="append">
+			<div class="pos-receipt-container">
+				<div class="pos-receipt-center-align" style="text-align:center;">
+				 	<t t-esc="order.formatted_validation_date"/> <t t-esc="order.name"/>
+					<t t-if="widget.pos.config.is_table_management">
+					 	<div class="receipt-phone">
+					 		<!--Floor --> <t t-esc="order.table.floor_id[1] || ''"/><br />
+						</div>
+						<div class="receipt-user">
+							 <!-- Table --> <t t-esc="order.table.name"/><br />
+						</div>
+					</t>
+					<div>  <!--Date and Hour :  -->
+
+						<!-- <t t-esc="order.formatted_validation_date"/> -->
+						 <t t-esc="moment(order.creation_date).format('DD/MM/YYYY-HH:mm') "/>
+
+					</div>
+					<div class="receipt-user">
+						<t t-if="widget.pos.get_cashier()">
+							Waiter : <t t-esc="widget.pos.get_cashier().name"/><br />
+						</t>
+						<t t-else="">
+							Waiter : <t t-esc="widget.pos.pos_session.user_id[1]"/><br />
+						</t>
+					</div>
+					<div>
+						<h3><strong>Category: <t t-esc="category" /></strong></h3><br/>
+					</div>
+					<t t-if="count &gt; 0">
+						<table class='receipt-orderlines' >
+							<colgroup>
+								<col width='60%'/>
+								<col width='40%'/>
+							</colgroup>
+							<th style = "text-align : left;">Products</th>
+							<th style = "text-align : right;">Qty</th>
+							<tr t-foreach="orderlines" t-as="orderline">
+								<t t-if = "orderline.kot_print">
+									<td  class="pos-right-left" style = "text-align : left;">
+										<t t-if="(orderline.get_quantity_str_with_unit() - orderline.done_qty) !== 0">
+											<t t-esc="orderline.get_product().display_name" />
+											<t t-if="orderline.note">
+												<li class="info orderline-note">
+								                    <i class='fa fa-tag' role="img" aria-label="Note" title="Note"/><t t-esc="orderline.note" />
+								                </li>
+
+											</t>
+										</t>
+									</td>
+									
+									<td class="pos-right-align">
+										<t t-if="(orderline.get_quantity_str_with_unit() - orderline.done_qty) !== 0">
+											
+											<!-- <t t-esc="orderline.get_quantity_str_with_unit() - orderline.done_qty" class="pos-receipt-right-align"/> -->
+
+
+
+											<t t-esc="orderline.get_quantity_str_with_unit()" />
+
+
+										</t>
+									</td>
+								</t>
+							</tr>
+						</table>
+					</t>
+					<t t-if = "count == 0 ">
+						<div style = "text-align:center;"> Pas de commande disponible pour cette categorie / No Order Available for this Categorie </div>
+					</t>
+				</div>
+			</div>
+		</t>
+	</t>
+</templates>
